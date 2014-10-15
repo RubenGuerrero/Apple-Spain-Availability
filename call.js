@@ -1,8 +1,9 @@
 module.exports = {
 	makeCall: function(){
+
 		// Your accountSid and authToken from twilio.com/user/account
-		var accountSid = 'ACce88bd4e22e6893b1ba5cb1775929ba6';
-		var authToken = "46e9d8ffb364e8a6b1507dbbd44737b3";
+		var accountSid = process.env.TWILIO_SID;
+		var authToken = process.env.TWILIO_TOKEN;
 		var client = require('twilio')(accountSid, authToken);
 
 		//require the Twilio module and create a REST client 
