@@ -12,8 +12,6 @@ var REQ_COLOR = ['Gris espacial'];
 var ALERTED = false;
 
 
-call.makeCall();
-
 new CronJob('*/1 * * * *', function(){
     
 	products.getData(function(data){
@@ -23,6 +21,7 @@ new CronJob('*/1 * * * *', function(){
 				if(store.av){
 					if(!ALERTED){
 						mail.makeMail(data);
+						call.makeCall();
 						ALERTED = true;
 					}
 				}	
