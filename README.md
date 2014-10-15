@@ -1,4 +1,4 @@
-Apple Spain Avalibilty
+Apple Spain Availability
 ---
 
 **request to:** https://reserve.cdn-apple.com/ES/es_ES/reserve/iPhone/stores.json
