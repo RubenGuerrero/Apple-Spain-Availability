@@ -248,18 +248,23 @@ module.exports = {
 		var self = this;
 
 		unirest.get('https://reserve.cdn-apple.com/ES/es_ES/reserve/iPhone/stores.json')
-		.headers(headers).end(function (response) {
+		.headers(headers).end(function (response, error) {
 
-			self.STORES = response.body;
+			if(response.body.length > 0){
 
-			unirest.get('https://reserve.cdn-apple.com/ES/es_ES/reserve/iPhone/availability.json')
-			.headers(headers).end(function(response) {
+				self.STORES = response.body;
 
-				self.AVAILABILITY = response.body;
-				callback(self.getFilteredData(REQ_STORES, REQ_MODEL, REQ_SIZE, REQ_COLOR));
+				unirest.get('https://reserve.cdn-apple.com/ES/es_ES/reserve/iPhone/availability.json')
+				.headers(headers).end(function(response) {
 
-			});
+					self.AVAILABILITY = response.body;
+					callback(self.getFilteredData(REQ_STORES, REQ_MODEL, REQ_SIZE, REQ_COLOR));
 
+				});
+
+			}else{
+				callback({});
+			}
 		});
 
 	}
