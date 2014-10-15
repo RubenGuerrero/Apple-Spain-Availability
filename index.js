@@ -1,5 +1,7 @@
 var unirest = require('unirest');
 var products = require('./products').products;
+var async = require('async');
+
 
 var headers = {
 	/*'Host': 'reserve.cdn-apple.com',
@@ -50,24 +52,118 @@ var getSimpleProductsObject = function(store){
 
 }
 
+var makeCall = function(){
+	// Your accountSid and authToken from twilio.com/user/account
+	var accountSid = 'ACce88bd4e22e6893b1ba5cb1775929ba6';
+	var authToken = "46e9d8ffb364e8a6b1507dbbd44737b3";
+	var client = require('twilio')(accountSid, authToken);
 
-unirest.get('https://reserve.cdn-apple.com/ES/es_ES/reserve/iPhone/stores.json')
-.headers(headers)
-.end(function (response) {
+	//require the Twilio module and create a REST client 
+	var client = require('twilio')(accountSid, authToken); 
 
-	STORES = response.body;
+	client.calls.create({ 
+		to: "+34677176592", 
+		from: "+34518880609", 
+		url: "http://www.google.es",
+		method: "GET",
+		fallbackMethod: "GET",
+		statusCallbackMethod: "GET",
+		record: "false" 
+	}, function(err, call) {
+		console.log(err);
+		console.log(call.sid);
+	});
+};
 
-	unirest.get('https://reserve.cdn-apple.com/ES/es_ES/reserve/iPhone/availability.json')
+var REQ_STORES = ['R435', 'R436', 'R450', 'R397'];
+var REQ_MODEL = ['iPhone 6'];
+var REQ_SIZE = ['64GB'];
+var REQ_COLOR = ['Gris espacial'];
+
+var getFilteredData = function(cb){
+
+	var stores = STORES.stores.filter(function(store){
+		return REQ_STORES.indexOf(store.storeNumber) !== -1;
+	});
+
+	var data = [];
+
+	var le = stores.length;
+
+	var fakeCB = function(_data){
+		data.push(_data);
+		if(--le === 0){
+			cb(data)
+		}
+	}
+
+	stores.forEach(function(store){
+		var AV = getSimpleProductsObject(store.storeNumber);
+		AV.forEach(function(model){
+			if(REQ_MODEL.indexOf(model.name) !== -1){
+
+				model.sizes.forEach(function(size){
+					if(REQ_SIZE.indexOf(size.size) !== -1){
+
+						size.colors.forEach(function(color){
+							if(REQ_COLOR.indexOf(color.name) !== -1){
+
+								fakeCB({
+									store: store.storeName,
+									size: size.size,
+									color: color.name,
+									av: color.available
+								});
+
+							}
+
+						});
+					}
+
+				});
+			}
+
+		});
+	});
+};
+
+var getData = function (cb){
+
+	unirest.get('https://reserve.cdn-apple.com/ES/es_ES/reserve/iPhone/stores.json')
 	.headers(headers)
-	.end(function(response) {
+	.end(function (response) {
 
-		AVAILABILITY = response.body;
+		STORES = response.body;
 
-		STORES.stores.forEach(function(store){
-			console.log(store.storeName+' ('+store.storeNumber+')--------------------');
-			console.log(JSON.stringify(getSimpleProductsObject(store.storeNumber)));
+		unirest.get('https://reserve.cdn-apple.com/ES/es_ES/reserve/iPhone/availability.json')
+		.headers(headers)
+		.end(function(response) {
+
+			AVAILABILITY = response.body;
+			getFilteredData(function(data){
+				cb(data);
+			});
+
 		});
 
 	});
+
+}
+
+var express = require('express');
+var app = express();
+
+app.get('/', function (req, res) {
+	getData(function(data){
+		res.end(JSON.stringify(data));
+	});
+})
+
+var server = app.listen(80, function () {
+
+	var host = server.address().address
+	var port = server.address().port
+
+	console.log('Example app listening at http://%s:%s', host, port)
 
 });
