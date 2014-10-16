@@ -18,7 +18,6 @@ new CronJob('*/1 * * * *', function(){
 
 		if(data && data.length > 0){
 			data.forEach(function(store){
-				console.log(store);
 				if(store.av){
 					if(!ALERTED){
 						mail.makeMail(data);
