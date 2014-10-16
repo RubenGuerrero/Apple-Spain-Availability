@@ -250,7 +250,7 @@ module.exports = {
 		unirest.get('https://reserve.cdn-apple.com/ES/es_ES/reserve/iPhone/stores.json')
 		.headers(headers).end(function (response, error) {
 
-			if(response.body.length > 0){
+			if(response.body.stores){
 
 				self.STORES = response.body;
 

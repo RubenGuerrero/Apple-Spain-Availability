@@ -13,11 +13,12 @@ var ALERTED = false;
 
 
 new CronJob('*/1 * * * *', function(){
-    
+
 	products.getData(function(data){
 
 		if(data && data.length > 0){
 			data.forEach(function(store){
+				console.log(store);
 				if(store.av){
 					if(!ALERTED){
 						mail.makeMail(data);
@@ -31,3 +32,24 @@ new CronJob('*/1 * * * *', function(){
 	}, REQ_STORES, REQ_MODEL, REQ_SIZE, REQ_COLOR);
 
 }, null, true, "Europe/Madrid");
+
+
+var express = require('express');
+var app = express();
+
+app.get('/', function (req, res) {
+	products.getData(function(data){
+		res.json(data);
+	}, REQ_STORES, REQ_MODEL, REQ_SIZE, REQ_COLOR);
+})
+
+app.set('port', (process.env.PORT || 5000))
+
+var server = app.listen(app.get('port'), function () {
+
+	var host = server.address().address
+	var port = server.address().port
+
+	console.log('Example app listening at http://%s:%s', host, port)
+
+});
