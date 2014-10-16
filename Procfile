@@ -1,2 +1,2 @@
-web: npm start
+web: node cron.js
 cron: node cron.js
