@@ -14,10 +14,13 @@ var ALERTED = false;
 
 new CronJob('*/1 * * * *', function(){
 
+	console.log('----cron started----');
+
 	products.getData(function(data){
 
 		if(data && data.length > 0){
 			data.forEach(function(store){
+				console.log('Available: ' + store.av);
 				if(store.av){
 					if(!ALERTED){
 						mail.makeMail(data);
@@ -30,7 +33,9 @@ new CronJob('*/1 * * * *', function(){
 		
 	}, REQ_STORES, REQ_MODEL, REQ_SIZE, REQ_COLOR);
 
-}, null, true, "Europe/Madrid");
+}, function(){
+	console.log('----cron finished----');
+}, true, "Europe/Madrid");
 
 
 var express = require('express');
