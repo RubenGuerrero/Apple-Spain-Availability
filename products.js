@@ -216,6 +216,7 @@ module.exports = {
 								if(REQ_COLOR.indexOf(color.name) !== -1){
 
 									data.push({
+										model: model.name,
 										store: store.storeName,
 										size: size.size,
 										color: color.name,

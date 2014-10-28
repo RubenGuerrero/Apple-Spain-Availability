@@ -2,7 +2,7 @@ var products	= require('./products');
 var call		= require('./call');
 
 var REQ_STORES = ['R435', 'R436', 'R450', 'R397'];
-var REQ_MODEL = ['iPhone 6'];
+var REQ_MODEL = ['iPhone 6', 'iPhone 6 Plus'];
 var REQ_SIZE = ['64GB'];
 var REQ_COLOR = ['Gris espacial'];
 
