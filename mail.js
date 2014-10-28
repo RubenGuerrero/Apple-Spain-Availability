@@ -10,15 +10,15 @@ module.exports = {
 
 		var html = '';
 		data.forEach(function(store){
-			html += '<p>'+store.store+': '+store.av+'</p>';
+			html += '<p>'+store.store+': '+store.av+' (' +  store.model ? store.model : '' + ')</p>';
 		})
 
 		transporter.sendMail({
-		    from: 'ruben.guerrero.sanchez@gmail.com', // sender address
-		    to: 'yo@rubenguerrero.com', // list of receivers
-		    subject: 'iPhone Disponible', // Subject line
-		    text: html, // plaintext body
-		    html: html // html body
+			from: 'ruben.guerrero.sanchez@gmail.com', // sender address
+			to: 'yo@rubenguerrero.com', // list of receivers
+			subject: 'iPhone Disponible', // Subject line
+			text: html, // plaintext body
+			html: html // html body
 		});
 
 	}
